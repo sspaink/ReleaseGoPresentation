@@ -41,13 +41,6 @@ jobs:
         env:
           MARP_USER: root:root
 
-      - name: Marp Build (docs folder)
-        uses: docker://marpteam/marp-cli:v1.7.0
-        with:
-          args: -I docs/ -o build/docs/
-        env:
-          MARP_USER: root:root
-
       - name: Deploy preview
         if: ${{ github.event_name == 'pull_request' }}
         uses: rossjrw/pr-preview-action@v1
