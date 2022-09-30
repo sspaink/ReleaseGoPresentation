@@ -1,3 +1,7 @@
-# Go West 2022 Presentation
+# Shipping Go Without Sinking
 
-Using [Marp](https://marp.app/)
+Presented at Go West 2022
+
+Recording: TBA
+
+Slides created using [Marp](https://marp.app/)

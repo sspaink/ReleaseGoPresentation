@@ -20,9 +20,9 @@ style: |
 _class: lead invert
 -->
 
-# Shipping Go without Sinking
+# Shipping Go Without Sinking
 
-![sinking](img/sinking.png)
+![width:600px](img/sinking.png)
 
 Go West Conference 2022
 
@@ -49,12 +49,13 @@ Collect data, organizes it, and push it where you want
 
 ![width:180px](img/qr-code.png)
 
-## Releasing a Go binary
+## Important aspects
 
 ![right width:800px](img/marlin.png)
 
 - Single Binary
 - Cross Platform
+- Github Release
 - Dockerfile
 
 ## Release Cycle
@@ -70,3 +71,30 @@ Collect data, organizes it, and push it where you want
 
 - End of every quarter (March, June, September, December)
 - Contains new features + fixes and updates
+
+## Starting the Release
+
+- Eeny, meeny, miny moe, Catch a tiger by the toe
+- Track progress in slack
+
+![width:600px](img/slack-progress.gif)
+
+## Steps Overview
+
+1. Preparing the code
+2. Building and packaging
+3. Distributing the binaries
+
+![bg fit right](img/robot.png)
+
+<!--
+_class: lead invert
+-->
+
+## Preparing the code
+
+![width:400px](img/swimming.png)
+
+<!--
+_class: lead invert
+-->
