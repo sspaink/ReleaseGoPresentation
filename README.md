@@ -24,7 +24,7 @@ _class: lead invert
 
 ![sinking](img/sinking.png)
 
-A deep dive into releasing Telegraf
+A deep dive into releasing a Go binary
 
 ## Speaker Introduction
 
@@ -39,6 +39,9 @@ _style: lead invert
 -->
 
 ## What is Telegraf?
+
+<!-- This is a presenter note for this page. -->
+<!-- EXAMPLE: An EXAMPLE directive is not defined in Marp/Marpit, so this works as presenter notes. -->
 
 Collect data, organizes it, and push it where you want
 
