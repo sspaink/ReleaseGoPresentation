@@ -34,14 +34,9 @@ A deep dive into releasing a Go binary
 
 ![bg fit right:44%](img/mermaid.png)
 
-<!--
-_style: lead invert
--->
-
-## What is Telegraf?
-
 <!-- This is a presenter note for this page. -->
 <!-- EXAMPLE: An EXAMPLE directive is not defined in Marp/Marpit, so this works as presenter notes. -->
+## What is Telegraf?
 
 Collect data, organizes it, and push it where you want
 
