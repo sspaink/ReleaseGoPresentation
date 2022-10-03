@@ -91,7 +91,7 @@ Collect data, organizes it, and push it where you want
 _class: lead invert
 -->
 
-## Preparing the code
+## Preparing the Code
 
 ![width:400px](img/swimming.png)
 
@@ -237,3 +237,188 @@ RunCommand(path, "git", arguments...)
 
 - Cherry-pick changes into release branch continuously
 - Update changelog continuously
+
+## Building and Packaging
+
+![width:600px](img/package.png)
+
+<!--
+_class: lead invert
+-->
+
+## The Makefile
+
+- make test
+- make build
+- make package include_packages=”$(make windows)”
+
+```makefile
+LDFLAGS := $(LDFLAGS) -X $(INTERNAL_PKG).Commit=$(commit) -X $(INTERNAL_PKG).Branch=$(branch)
+ifneq ($(tag),)
+    LDFLAGS += -X $(INTERNAL_PKG).Version=$(version)
+else
+    LDFLAGS += -X $(INTERNAL_PKG).Version=$(version)-$(commit)
+endif
+
+.PHONY: build
+build:
+    go build -tags "$(BUILDTAGS)" -ldflags "$(LDFLAGS)" ./cmd/telegraf
+```
+
+## Mage
+
+```go
+func build(p platform) (string, error) {
+    env := map[string]string{"GOOS": p.OS, "GOARCH": p.ARCH}
+    folderName := fmt.Sprintf("%s_%s", p.OS, p.ARCH)
+    binName := productName + p.Extension
+    filePath := filepath.Join("bin", folderName, binName)
+    err := runCmd(env, "go", "build", "-o", filePath, "cmd/main.go")
+    if err != nil {
+        return "", err
+    }
+
+    return filePath, nil
+}
+```
+
+Check it out: https://github.com/magefile/mage 
+
+##
+
+![bg fit ](img/ci.png)
+
+## Automatic Alpha Builds
+
+![bg 80%](img/tigerbot.png)
+
+## Signing Windows and Mac artifacts
+
+Snippet of mac signing shell script
+
+```sh
+codesign -s "$DeveloperID" --timestamp --options=runtime --deep --force Telegraf.app
+baseName=$(basename "$tarFile" .tar.gz)
+hdiutil create -size 500m -volname Telegraf -srcfolder Telegraf.app "$baseName".dmg
+codesign -s "$DeveloperID" --timestamp --options=runtime "$baseName".dmg
+```
+
+Snippet of windows signing powershell script
+
+```powershell
+Set-AuthenticodeSignature -Certificate $Cert -FilePath  $telegrafExePath
+Compress-Archive -Path $subDirectoryPath -DestinationPath $artifact -Force
+```
+
+## Adding version and icon to Windows
+
+Using package josephspurrier/goversioninfo
+
+```go
+//go:generate goversioninfo -icon=../../assets/windows/tiger.ico
+```
+
+```json
+{
+ "StringFileInfo": {
+  "ProductName": "Telegraf",
+  "ProductVersion": "1.25.0-71b4a0af"
+ }
+}
+```
+
+## Generating versioninfo.json
+
+```go
+version, _ := exec.Command("make", "version").Output()
+
+v := VersionInfo{
+    StringFileInfo: StringFileInfo{
+        ProductName:    "Telegraf",
+        ProductVersion: version,
+    },
+}
+
+if err := ioutil.WriteFile("cmd/telegraf/versioninfo.json", file, 0644); err != nil {
+    log.Fatalf("Failed to write versioninfo.json: %v", err)
+}
+```
+
+##
+
+![bg fit](img/winexe.png)
+
+![bg fit](img/windowsprop.png)
+
+## **Building and Packaging:** lessons learned
+
+- Don’t run the CI on wednesdays
+- Make artifacts readily available
+- Sign mac nightly, replicate release pipeline
+
+## **Building and Packaging:** future improvements
+
+- Migrate more steps to continuous integration pipeline
+
+## Distributing Binaries
+
+![width:600px](img/GopherAndTiger.png)
+
+<!--
+_class: lead invert
+-->
+
+## 
+
+![bg fit](img/github.png)
+
+## Updating the Website
+
+
+```go
+b, err = sjson.SetBytes(b, "telegraf_stable.version", version)
+if err != nil {
+    return nil, fmt.Errorf("failed to set telegraf_stable.version: %w", err)
+}
+```
+
+##
+
+![bg fit](img/website.png)
+
+## Testing Dockerfile
+
+```go
+container, _ := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
+    ContainerRequest: req,
+    Started:          true,
+})
+
+name, _ := container.Name(ctx)
+
+cmd := exec.Command("docker", "exec", name, "telegraf", "--version")
+out, _ := cmd.CombinedOutput()
+
+// Verify the correct version of Telegraf exists
+if !strings.Contains(string(out), ver.String()) {
+    return fmt.Errorf("Expected docker to give telegraf version %s but got %s", version, string(out))
+}
+```
+
+## **Distributing Binaries:** lessons learned
+
+- Document all permissions required
+- If there is a problem increment patch, or the hash will change
+
+## **Distributing Binaries:** future improvements
+
+- Migrate more steps to continuous integration pipeline
+
+## Conquering a Major Release
+
+- Breaking changes
+- Backwards compatibility important
+- Deprecating configuration options slowly
+- Getting into the habit
+
+![bg fit right:50%](img/princess_tower.png)
