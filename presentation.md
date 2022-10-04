@@ -110,7 +110,7 @@ Identifier added to determine when code should be included in build
 
 ## Dependency updates
 
-Telegraf has **421 packages** it is dependents on!
+Telegraf has **421 packages** it depends on!
 Dependabot a Github solution to automate dependency updates.
 
 ```yaml
