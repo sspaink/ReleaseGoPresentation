@@ -164,7 +164,7 @@ RunCommand(telegrafPath, "make", "test")
 RunCommand(path, "git", "add", strings.Join(changes, " "))
 RunCommand(path, "git", "commit", "-m", commitMsg)
 RunCommand(path, "git", "push", "origin", branch)
-RunCommand(path, "git", "rev-parse", "HEAD")
+hash, _ := RunCommand(path, "git", "rev-parse", "HEAD")
 ```
 
 ## Working with git commits
