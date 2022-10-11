@@ -29,13 +29,10 @@ Go West Conference 2022
 ## Speaker Introduction
 
 - **Name:** Sebastian Spaink
+- Writing Go for 4 years
 - Software Engineer at InfluxData
-- 40+ releases of Telegraf
 
 ![bg fit right:44%](img/mermaid.png)
-
-<!-- This is a presenter note for this page. -->
-<!-- EXAMPLE: An EXAMPLE directive is not defined in Marp/Marpit, so this works as presenter notes. -->
 
 ## What is Telegraf?
 
@@ -43,34 +40,37 @@ Collect data, organizes it, and push it where you want
 
 ![right width:350px](img/tea_sipping_tiger.png)
 
-- Written in Go
+- 40+ releases of Telegraf
 - Open Source, MIT License
-- 12k Github stars
+- 1000+ Unique Contributors
 
 ![width:180px](img/qr-code.png)
 
-## Important aspects
+## A successful release of Telegraf
 
-![right width:800px](img/marlin.png)
+![right width:700px](img/marlin.png)
 
 - Single Binary
 - Cross Platform
 - Github Release
+- Website release
 - Dockerfile
 
 ## **Release Cycle**
 
-![right width:270px](img/trikebike.png)
+![right width:400px](img/trikebike.png)
+
+### Feature releases
+
+- End of every quarter
+(March, June, September, December)
 
 ### Maintenance releases
 
 - Every 3 weeks
-- bug/security fixes, dependency updates
 
-### Feature releases
-
-- End of every quarter (March, June, September, December)
-- Contains new features + fixes and updates
+<!-- deprecated release candidates -->
+<!-- every month releases in future -->
 
 ## Starting the Release
 
@@ -99,29 +99,6 @@ _class: lead invert
 _class: lead invert
 -->
 
-## Build tags
-
-Identifier added to determine when code should be included in build
-
-| Syntax after Go v1.17       | Syntax before Go v1.17       |
-| -----------                 | -----------                  |
-| //go:build windows          | // +build windows            |
-| //go:build linux && amd64   | // +build linux,amd64        |
-
-## Dependency updates
-
-Telegraf has **421 packages** it depends on!
-Dependabot a Github solution to automate dependency updates.
-
-```yaml
-version: 2
-updates:
-  - package-ecosystem: "gomod"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-```
-
 ## Conventional Commit Messages
 
 Adding human and machine readable meaning to commit messages
@@ -133,11 +110,10 @@ Adding human and machine readable meaning to commit messages
 
 ## Git branching strategy
 
-![right width:800px](img/watering.png)
+![right width:600px](img/watering.png)
 
 - master branch
-- release branch
-- release tag
+- branch for each release
 
 ## Executing external commands
 
@@ -179,7 +155,19 @@ var c WrapColor
 w = io.MultiWriter(&c, &stdBuffer)
 ```
 
-## Collecting git commits
+## Running the commands
+
+```go
+RunCommand(telegrafPath, "make", "tidy")
+RunCommand(telegrafPath, "make", "test")
+
+RunCommand(path, "git", "add", strings.Join(changes, " "))
+RunCommand(path, "git", "commit", "-m", commitMsg)
+RunCommand(path, "git", "push", "origin", branch)
+RunCommand(path, "git", "rev-parse", "HEAD")
+```
+
+## Working with git commits
 
 ```go
 type Commit struct {
@@ -190,6 +178,11 @@ type Commit struct {
     Subject         string // (e.g. `Add new feature`)
     Title           string // (e.g. `feat(core): Add new feature`)
 }
+```
+
+## Collecting git commits
+
+```go
 separator := "@@__CHGLOG__@@"
 delimiter := "@@__CHGLOG_DELIMITER__@@"
 logFormat := separator + strings.Join([]string{
@@ -291,24 +284,6 @@ Check it out: https://github.com/magefile/mage
 ## Automatic Alpha Builds
 
 ![bg 80%](img/tigerbot.png)
-
-## Signing Windows and Mac artifacts
-
-Snippet of mac signing shell script
-
-```sh
-codesign -s "$DeveloperID" --timestamp --options=runtime --deep --force Telegraf.app
-baseName=$(basename "$tarFile" .tar.gz)
-hdiutil create -size 500m -volname Telegraf -srcfolder Telegraf.app "$baseName".dmg
-codesign -s "$DeveloperID" --timestamp --options=runtime "$baseName".dmg
-```
-
-Snippet of windows signing powershell script
-
-```powershell
-Set-AuthenticodeSignature -Certificate $Cert -FilePath  $telegrafExePath
-Compress-Archive -Path $subDirectoryPath -DestinationPath $artifact -Force
-```
 
 ## Adding version and icon to Windows
 
