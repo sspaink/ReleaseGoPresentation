@@ -72,6 +72,12 @@ Collect data, organizes it, and push it where you want
 <!-- deprecated release candidates -->
 <!-- every month releases in future -->
 
+## Semantic Versions
+
+- Major
+- Minor
+- Patch
+
 ## Starting the Release
 
 - Eeny, meeny, miny moe, Catch a tiger by the toe
