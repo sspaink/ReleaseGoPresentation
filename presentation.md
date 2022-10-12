@@ -122,8 +122,9 @@ Adding human and machine readable meaning to commit messages
 
 ![right width:600px](img/watering.png)
 
-- master branch
+- copy master branch
 - branch for each release
+- maintain release branch
 
 ## Executing external commands
 
