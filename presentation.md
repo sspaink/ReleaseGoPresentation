@@ -72,11 +72,15 @@ Collect data, organizes it, and push it where you want
 <!-- deprecated release candidates -->
 <!-- every month releases in future -->
 
-## Semantic Versions
+## Semantic Versioning
 
-- Major
-- Minor
-- Patch
+**example current version** 1.19.0
+
+| Type       | Version | Description                           |
+| -----------|---------|---------------------------------------|
+| **Patch:** | 1.19.1  | maintenance release                   |
+| **Minor:** | 1.20.0  | feature release                       |
+| **Major:** | 2.0.0   | feature release with breaking changes |
 
 ## Starting the Release
 
