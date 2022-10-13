@@ -91,7 +91,7 @@ Collect data, organizes it, and push it where you want
 
 ## Steps Overview
 
-1. Preparing the code
+1. Preparing the git repo
 2. Building and packaging
 3. Distributing the binaries
 
@@ -101,7 +101,7 @@ Collect data, organizes it, and push it where you want
 _class: lead invert
 -->
 
-## Preparing the Code
+## Preparing the git repo
 
 ![width:400px](img/swimming.png)
 
