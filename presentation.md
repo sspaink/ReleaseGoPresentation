@@ -48,11 +48,11 @@ Collect data, organizes it, and push it where you want
 
 ## A successful release of Telegraf
 
-![right width:700px](img/marlin.png)
+![right width:690px](img/marlin.png)
 
 - Single Binary
 - Cross Platform
-- Dockerfile
+- Dockerfile + Helm Chart
 - Announce release
 
 # **Before** Release Day
@@ -117,7 +117,7 @@ _class: lead invert
 
 ## Steps Overview
 
-1. Preparing the git repo
+1. Prepare release branch
 2. Building and packaging
 3. Announcing the release
 
@@ -127,7 +127,7 @@ _class: lead invert
 _class: lead invert
 -->
 
-## Preparing the git repo
+## Prepare release branch
 
 ![width:400px](img/swimming.png)
 
