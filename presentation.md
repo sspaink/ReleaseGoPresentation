@@ -52,11 +52,16 @@ Collect data, organizes it, and push it where you want
 
 - Single Binary
 - Cross Platform
-- Github Release
-- Website release
 - Dockerfile
+- Announce release
 
-## **Release Cycle**
+# **Before** Release Day
+
+<!--
+_class: lead invert
+-->
+
+## When? **The Release Cycle**
 
 ![right width:400px](img/trikebike.png)
 
@@ -82,6 +87,27 @@ Collect data, organizes it, and push it where you want
 | **Minor:** | 1.20.0  | feature release                       |
 | **Major:** | 2.0.0   | feature release with breaking changes |
 
+## Conventional Commit Messages
+
+Adding human and machine readable meaning to commit messages
+
+**Example:** feat(inputs.directory_monitor): Traverse sub-directories
+| Type | Optional Scope       | Description |
+| -----------                 | -----------                  | -----------  |
+| feat          | inputs.directory_monitor           | Traverse sub-directories |
+
+## Automatic Alpha Builds
+
+![bg 80%](img/tigerbot.png)
+
+## Release Day
+
+![width:800px](img/gopherfire.png)
+
+<!--
+_class: lead invert
+-->
+
 ## Starting the Release
 
 - Eeny, meeny, miny moe, Catch a tiger by the toe
@@ -93,7 +119,7 @@ Collect data, organizes it, and push it where you want
 
 1. Preparing the git repo
 2. Building and packaging
-3. Distributing the binaries
+3. Announcing the release
 
 ![bg fit right](img/robot.png)
 
@@ -108,15 +134,6 @@ _class: lead invert
 <!--
 _class: lead invert
 -->
-
-## Conventional Commit Messages
-
-Adding human and machine readable meaning to commit messages
-
-**Example:** feat(inputs.directory_monitor): Traverse sub-directories
-| Type | Optional Scope       | Description |
-| -----------                 | -----------                  | -----------  |
-| feat          | inputs.directory_monitor           | Traverse sub-directories |
 
 ## Git branching strategy
 
@@ -292,10 +309,6 @@ Check it out: https://github.com/magefile/mage
 
 ![bg fit ](img/ci.png)
 
-## Automatic Alpha Builds
-
-![bg 80%](img/tigerbot.png)
-
 ## Adding version and icon to Windows
 
 Using package josephspurrier/goversioninfo
@@ -346,7 +359,7 @@ if err := ioutil.WriteFile("cmd/telegraf/versioninfo.json", file, 0644); err != 
 
 - Migrate more steps to continuous integration pipeline
 
-## Distributing Binaries
+## Announcing the release
 
 ![width:600px](img/GopherAndTiger.png)
 
