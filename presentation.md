@@ -291,14 +291,18 @@ RunCommand(path, "git", arguments...)
 
 ## **Preparing the code:** lessons learned
 
-- Organizing commits with conventional commit messages
-- Write the release tools the team knows best
-- Allow tools to be re-run
+- Conventional commit messages unlocks automation
+- Automate using Go
 
 ## **Preparing the code:** future improvements
 
-- Cherry-pick changes into release branch continuously
-- Update changelog continuously
+- Don't wait for release day
+  - Cherry-pick continously
+  - Update changelog continuously
+
+Challenges:
+
+- What if change is fixing a feat?
 
 ## Building and Packaging
 
@@ -367,7 +371,7 @@ Using package josephspurrier/goversioninfo
 }
 ```
 
-## Generating versioninfo.json
+## Generating **versioninfo.json**
 
 ```go
 version, _ := exec.Command("make", "version").Output()
@@ -390,6 +394,12 @@ if err := ioutil.WriteFile("cmd/telegraf/versioninfo.json", file, 0644); err != 
 
 ![bg fit](img/windowsprop.png)
 
+## Update Package Repository
+
+- Sign artifacts with GPG key
+- Upload to S3 bucket
+- Update http://repos.influxdata.com/
+
 ## **Building and Packaging:** lessons learned
 
 - Don’t run the CI on wednesdays
@@ -408,12 +418,27 @@ if err := ioutil.WriteFile("cmd/telegraf/versioninfo.json", file, 0644); err != 
 _class: lead invert
 -->
 
+## Update multiple locations
+
+- influxdata/telegraf (public)
+- influxdata/influxdata-docker (public)
+- influxdata/official-images (public, fork of docker-library)
+- influxdata/helm-charts (public)
+- influxdata/website (private)
+
 ## 
 
 ![bg fit](img/github.png)
 
-## Updating the Website
+##
 
+![bg fit](img/downloads.JPG)
+
+## https://portal.influxdata.com/downloads/
+
+![width:1000px](img/website.png)
+
+## Updating the Website
 
 ```go
 b, err = sjson.SetBytes(b, "telegraf_stable.version", version)
@@ -422,14 +447,35 @@ if err != nil {
 }
 ```
 
+## Update Docker manifest.json
+
+```go
+// Read the manifest file to determine current versions and add latest version
+type Manifest struct {
+    Name          string     `json:"name"`
+    Maintainers   []string   `json:"maintainers"`
+    Versions      []string   `json:"versions"`
+    Architectures []string   `json:"architectures"`
+    Variants      []Variants `json:"variants"`
+}
+
+ver, _ := semver.NewVersion(version)
+
+// Drop oldest version and add newest version
+var oldestVersion string
+oldestVersion, m.Versions = m.Versions[0], m.Versions[1:]
+m.Versions = append(m.Versions, fmt.Sprintf("%d.%d", ver.Major(), ver.Minor()))
+```
+
 ##
 
-![bg fit](img/website.png)
+![bg fit](img/dockerpr.JPG)
 
 ## Testing Dockerfile
 
 ```go
-container, _ := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
+container, _ := testcontainers.GenericContainer(ctx, 
+testcontainers.GenericContainerRequest{
     ContainerRequest: req,
     Started:          true,
 })
@@ -441,9 +487,36 @@ out, _ := cmd.CombinedOutput()
 
 // Verify the correct version of Telegraf exists
 if !strings.Contains(string(out), ver.String()) {
-    return fmt.Errorf("Expected docker to give telegraf version %s but got %s", version, string(out))
+    return fmt.Errorf("Expected Telegraf version %s but got %s", version, string(out))
 }
 ```
+
+## Update Helm Chart
+
+```go
+
+import yaml "gopkg.in/yaml.v3"
+
+var n yaml.Node
+err := yaml.Unmarshal(data, &n)
+if err != nil {
+    return nil, fmt.Errorf("failed to unmarshal YAML: %w", err)
+}
+
+_, err = walkContent(&n, "tag", fmt.Sprintf("%d.%d-alpine", version.Major(), version.Minor()))
+if err != nil {
+    return nil, fmt.Errorf("failed to update tag in YAML: %w", err)
+}
+
+updated, err := yaml.Marshal(&n)
+if err != nil {
+    return nil, fmt.Errorf("failed to marshal YAML: %w", err)
+}
+```
+
+##
+
+![bg fit](img/helmchart.JPG)
 
 ## **Distributing Binaries:** lessons learned
 
