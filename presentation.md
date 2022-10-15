@@ -87,6 +87,22 @@ _class: lead invert
 | **Minor:** | 1.20.0  | feature release                       |
 | **Major:** | 2.0.0   | feature release with breaking changes |
 
+## Semantic Versioning In Go
+
+```go
+// "github.com/Masterminds/semver"
+// Version represents a single semantic version.
+type Version struct {
+    major, minor, patch int64
+    pre                 string
+    metadata            string
+    original            string
+}
+
+currentVersion, _ := semver.NewVersion(version)
+nextVersion := currentVersion.IncMinor()
+```
+
 ## Conventional Commit Messages
 
 Adding human and machine readable meaning to commit messages
@@ -99,6 +115,31 @@ Adding human and machine readable meaning to commit messages
 ## Automatic Alpha Builds
 
 ![bg 80%](img/tigerbot.png)
+
+## Keep things **tidy**
+
+```makefile
+.PHONY: tidy
+tidy:
+    go mod verify
+    go mod tidy
+    @if ! git diff --quiet go.mod go.sum; then \
+        echo "please run go mod tidy and check in changes,
+        you might have to use the same version of Go as the CI"; \
+        exit 1; \
+    fi
+```
+
+## Lint free code: **golangci-lint**
+
+![right width:450px](img/handomse_gopher.png)
+
+![width:380px](img/lint.JPG)
+
+## Staying updated
+
+![width:780px](img/goupdate.JPG)
+https://go.dev/VERSION?m=text
 
 ## Release Day
 
