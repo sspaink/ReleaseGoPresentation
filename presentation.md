@@ -354,6 +354,15 @@ Check it out: https://github.com/magefile/mage
 
 ![bg fit ](img/ci.png)
 
+## Build tags
+
+Identifier added to determine when code should be included in build
+
+| Syntax after Go v1.17       | Syntax before Go v1.17       |
+| -----------                 | -----------                  |
+| //go:build windows          | // +build windows            |
+| //go:build linux && amd64   | // +build linux,amd64        |
+
 ## Adding version and icon to Windows
 
 Using package josephspurrier/goversioninfo
