@@ -390,7 +390,7 @@ if err := ioutil.WriteFile("cmd/telegraf/versioninfo.json", file, 0644); err != 
 
 ##
 
-![bg fit](img/winexe.png)
+![bg width:60%](img/winexe.png)
 
 ![bg fit](img/windowsprop.png)
 
