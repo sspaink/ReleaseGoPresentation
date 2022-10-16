@@ -22,7 +22,7 @@ _class: lead invert
 
 # Shipping Go Without Sinking
 
-![width:600px](img/sinking.png)
+![width:500px](img/sinking.png)
 
 Go West Conference 2022
 
@@ -412,7 +412,7 @@ if err := ioutil.WriteFile("cmd/telegraf/versioninfo.json", file, 0644); err != 
 
 ## Announcing the release
 
-![width:600px](img/GopherAndTiger.png)
+![width:600px](img/GopherAndTiger2.png)
 
 <!--
 _class: lead invert
