@@ -412,7 +412,7 @@ if err := ioutil.WriteFile("cmd/telegraf/versioninfo.json", file, 0644); err != 
 
 ## Announcing the release
 
-![width:600px](img/GopherAndTiger2.png)
+![width:600px](img/GopherAndTiger.png)
 
 <!--
 _class: lead invert
