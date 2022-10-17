@@ -224,16 +224,24 @@ var c WrapColor
 w = io.MultiWriter(&c, &stdBuffer)
 ```
 
-## Running the commands
+## Update git branches
 
 ```go
-RunCommand(telegrafPath, "make", "tidy")
-RunCommand(telegrafPath, "make", "test")
+RunCommand(path, "make", "test")
+// maintenance release
+for response != "Y" && response != "N" {
+    fmt.Println(color.YellowString("Cherry-pick this commit?: %s", c.Title))
+    response, _ = prompt.Run()
+    switch response {
+    case "Y", "y":
+        arguments = []string{"cherry-pick", "-x", c.Hash}
+        _, err := RunCommand(path, "git", arguments...)
+    }
+}
 
-RunCommand(path, "git", "add", strings.Join(changes, " "))
-RunCommand(path, "git", "commit", "-m", commitMsg)
-RunCommand(path, "git", "push", "origin", branch)
-hash, _ := RunCommand(path, "git", "rev-parse", "HEAD")
+// feature release
+arguments := []string{"checkout", "-b", branchName}
+output, err := RunCommand(path, "git", arguments)
 ```
 
 ## Working with git commits
