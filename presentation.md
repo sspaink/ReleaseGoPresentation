@@ -312,44 +312,6 @@ Challenges:
 _class: lead invert
 -->
 
-## The Makefile
-
-- make test
-- make build
-- make package include_packages=”$(make windows)”
-
-```makefile
-LDFLAGS := $(LDFLAGS) -X $(INTERNAL_PKG).Commit=$(commit) -X $(INTERNAL_PKG).Branch=$(branch)
-ifneq ($(tag),)
-    LDFLAGS += -X $(INTERNAL_PKG).Version=$(version)
-else
-    LDFLAGS += -X $(INTERNAL_PKG).Version=$(version)-$(commit)
-endif
-
-.PHONY: build
-build:
-    go build -tags "$(BUILDTAGS)" -ldflags "$(LDFLAGS)" ./cmd/telegraf
-```
-
-## Mage
-
-```go
-func build(p platform) (string, error) {
-    env := map[string]string{"GOOS": p.OS, "GOARCH": p.ARCH}
-    folderName := fmt.Sprintf("%s_%s", p.OS, p.ARCH)
-    binName := productName + p.Extension
-    filePath := filepath.Join("bin", folderName, binName)
-    err := runCmd(env, "go", "build", "-o", filePath, "cmd/main.go")
-    if err != nil {
-        return "", err
-    }
-
-    return filePath, nil
-}
-```
-
-Check it out: https://github.com/magefile/mage 
-
 ##
 
 ![bg fit ](img/ci.png)
@@ -362,6 +324,81 @@ Identifier added to determine when code should be included in build
 | -----------                 | -----------                  |
 | //go:build windows          | // +build windows            |
 | //go:build linux && amd64   | // +build linux,amd64        |
+
+## Architectures Defined
+
+```makefile
+# e.g. make package include_packages="$(make amd64)"
+arm64 += linux_arm64.tar.gz arm64.deb aarch64.rpm
+.PHONY: arm64
+arm64:
+    @ echo $(arm64)
+amd64 += freebsd_amd64.tar.gz linux_amd64.tar.gz amd64.deb x86_64.rpm
+.PHONY: amd64
+amd64:
+    @ echo $(amd64)
+windows += windows_i386.zip windows_amd64.zip
+.PHONY: windows
+windows:
+    @ echo $(windows)
+....
+```
+
+## make build
+
+use -ldflags to change the value of variables at build time
+
+```makefile
+tag := $(shell git describe --exact-match --tags 2>/dev/null)
+version := $(tag:v%=%)
+
+INTERNAL_PKG=github.com/influxdata/telegraf/internal
+LDFLAGS := -X $(INTERNAL_PKG).Version=$(version)
+
+.PHONY: build
+build:
+    go build -ldflags "$(LDFLAGS)" ./cmd/telegraf
+```
+
+## make package
+
+```makefile
+include_packages := $(mips) $(mipsel) $(arm64) $(amd64) $(static) $(armel) 
+$(armhf) $(riscv64) $(s390x) $(ppc64le) $(i386) $(windows) $(darwinamd64) $(darwinarm64)
+
+.PHONY: $(include_packages)
+$(include_packages):
+    @$(MAKE) install
+    @mkdir -p $(pkgdir)
+
+    @if [ "$(suffix $@)" = ".rpm" ]; then \
+        fpm ...
+    elif [ "$(suffix $@)" = ".deb" ]; then \
+        fpm ....
+    elif [ "$(suffix $@)" = ".zip" ]; then \
+        (cd $(dir $(DESTDIR)) && zip -r - ./*) > $(pkgdir)/telegraf-$(tar_version)_$@ ;\
+    elif [ "$(suffix $@)" = ".gz" ]; then \
+        tar -czvf $(pkgdir)/telegraf-$(tar_version)_$@ -C $(dir $(DESTDIR)) . ;\
+    fi
+```
+
+## Mage
+
+Mage is a make/rake-like build tool using Go.
+
+```go
+func build(p platform) (string, error) {
+    env := map[string]string{"GOOS": p.OS, "GOARCH": p.ARCH}
+    folderName := fmt.Sprintf("%s_%s", p.OS, p.ARCH)
+    binName := productName + p.Extension
+    filePath := filepath.Join("bin", folderName, binName)
+    _ := runCmd(env, "go", "build", "-o", filePath, "cmd/main.go")
+
+    return filePath, nil
+}
+```
+
+Check it out: https://github.com/magefile/mage 
 
 ## Adding version and icon to Windows
 
