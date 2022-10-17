@@ -510,14 +510,22 @@ img[alt~=&quot;right&quot;] {
   float: right;
 }
 ;">
-<h2>Running the commands</h2>
-<pre><code class="language-go"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap>RunCommand(telegrafPath, <span class="hljs-string">&quot;make&quot;</span>, <span class="hljs-string">&quot;tidy&quot;</span>)
-RunCommand(telegrafPath, <span class="hljs-string">&quot;make&quot;</span>, <span class="hljs-string">&quot;test&quot;</span>)
+<h2>Update git branches</h2>
+<pre><code class="language-go"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap>RunCommand(path, <span class="hljs-string">&quot;make&quot;</span>, <span class="hljs-string">&quot;test&quot;</span>)
+<span class="hljs-comment">// maintenance release</span>
+<span class="hljs-keyword">for</span> response != <span class="hljs-string">&quot;Y&quot;</span> &amp;&amp; response != <span class="hljs-string">&quot;N&quot;</span> {
+    fmt.Println(color.YellowString(<span class="hljs-string">&quot;Cherry-pick this commit?: %s&quot;</span>, c.Title))
+    response, _ = prompt.Run()
+    <span class="hljs-keyword">switch</span> response {
+    <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;Y&quot;</span>, <span class="hljs-string">&quot;y&quot;</span>:
+        arguments = []<span class="hljs-keyword">string</span>{<span class="hljs-string">&quot;cherry-pick&quot;</span>, <span class="hljs-string">&quot;-x&quot;</span>, c.Hash}
+        _, err := RunCommand(path, <span class="hljs-string">&quot;git&quot;</span>, arguments...)
+    }
+}
 
-RunCommand(path, <span class="hljs-string">&quot;git&quot;</span>, <span class="hljs-string">&quot;add&quot;</span>, strings.Join(changes, <span class="hljs-string">&quot; &quot;</span>))
-RunCommand(path, <span class="hljs-string">&quot;git&quot;</span>, <span class="hljs-string">&quot;commit&quot;</span>, <span class="hljs-string">&quot;-m&quot;</span>, commitMsg)
-RunCommand(path, <span class="hljs-string">&quot;git&quot;</span>, <span class="hljs-string">&quot;push&quot;</span>, <span class="hljs-string">&quot;origin&quot;</span>, branch)
-hash, _ := RunCommand(path, <span class="hljs-string">&quot;git&quot;</span>, <span class="hljs-string">&quot;rev-parse&quot;</span>, <span class="hljs-string">&quot;HEAD&quot;</span>)
+<span class="hljs-comment">// feature release</span>
+arguments := []<span class="hljs-keyword">string</span>{<span class="hljs-string">&quot;checkout&quot;</span>, <span class="hljs-string">&quot;-b&quot;</span>, branchName}
+output, err := RunCommand(path, <span class="hljs-string">&quot;git&quot;</span>, arguments)
 </span></span></foreignObject></svg></code></pre>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="22" data-class="invert" data-paginate="true" data-theme="gaia" data-heading-divider="2" data-style="section{
