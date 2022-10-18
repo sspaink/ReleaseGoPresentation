@@ -453,7 +453,7 @@ img[alt~=&quot;right&quot;] {
     <span class="hljs-keyword">var</span> w io.Writer
     <span class="hljs-keyword">var</span> stdBuffer bytes.Buffer
     w = io.MultiWriter(os.Stdout, &amp;stdBuffer)
-    
+
     cmd := exec.Command(command, arguments...)
     cmd.Dir = path
     cmd.Stdout = w
@@ -510,22 +510,15 @@ img[alt~=&quot;right&quot;] {
   float: right;
 }
 ;">
-<h2>Update git branches</h2>
-<pre><code class="language-go"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap>RunCommand(path, <span class="hljs-string">&quot;make&quot;</span>, <span class="hljs-string">&quot;test&quot;</span>)
-<span class="hljs-comment">// maintenance release</span>
-<span class="hljs-keyword">for</span> response != <span class="hljs-string">&quot;Y&quot;</span> &amp;&amp; response != <span class="hljs-string">&quot;N&quot;</span> {
-    fmt.Println(color.YellowString(<span class="hljs-string">&quot;Cherry-pick this commit?: %s&quot;</span>, c.Title))
-    response, _ = prompt.Run()
-    <span class="hljs-keyword">switch</span> response {
-    <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;Y&quot;</span>, <span class="hljs-string">&quot;y&quot;</span>:
-        arguments = []<span class="hljs-keyword">string</span>{<span class="hljs-string">&quot;cherry-pick&quot;</span>, <span class="hljs-string">&quot;-x&quot;</span>, c.Hash}
-        _, err := RunCommand(path, <span class="hljs-string">&quot;git&quot;</span>, arguments...)
-    }
+<h2>Working with git commits</h2>
+<pre><code class="language-go"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">type</span> Commit <span class="hljs-keyword">struct</span> {
+    Hash            <span class="hljs-keyword">string</span>
+    AuthorName      <span class="hljs-keyword">string</span>
+    Type            <span class="hljs-keyword">string</span> <span class="hljs-comment">// (e.g. `feat`)</span>
+    Scope           <span class="hljs-keyword">string</span> <span class="hljs-comment">// (e.g. `core`)</span>
+    Subject         <span class="hljs-keyword">string</span> <span class="hljs-comment">// (e.g. `Add new feature`)</span>
+    Title           <span class="hljs-keyword">string</span> <span class="hljs-comment">// (e.g. `feat(core): Add new feature`)</span>
 }
-
-<span class="hljs-comment">// feature release</span>
-arguments := []<span class="hljs-keyword">string</span>{<span class="hljs-string">&quot;checkout&quot;</span>, <span class="hljs-string">&quot;-b&quot;</span>, branchName}
-output, err := RunCommand(path, <span class="hljs-string">&quot;git&quot;</span>, arguments)
 </span></span></foreignObject></svg></code></pre>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="22" data-class="invert" data-paginate="true" data-theme="gaia" data-heading-divider="2" data-style="section{
@@ -541,15 +534,18 @@ img[alt~=&quot;right&quot;] {
   float: right;
 }
 ;">
-<h2>Working with git commits</h2>
-<pre><code class="language-go"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-keyword">type</span> Commit <span class="hljs-keyword">struct</span> {
-    Hash            <span class="hljs-keyword">string</span>
-    AuthorName      <span class="hljs-keyword">string</span>
-    Type            <span class="hljs-keyword">string</span> <span class="hljs-comment">// (e.g. `feat`)</span>
-    Scope           <span class="hljs-keyword">string</span> <span class="hljs-comment">// (e.g. `core`)</span>
-    Subject         <span class="hljs-keyword">string</span> <span class="hljs-comment">// (e.g. `Add new feature`)</span>
-    Title           <span class="hljs-keyword">string</span> <span class="hljs-comment">// (e.g. `feat(core): Add new feature`)</span>
-}
+<h2>Collecting git commits</h2>
+<pre><code class="language-go"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap>separator := <span class="hljs-string">&quot;@@__CHGLOG__@@&quot;</span>
+delimiter := <span class="hljs-string">&quot;@@__CHGLOG_DELIMITER__@@&quot;</span>
+logFormat := separator + strings.Join([]<span class="hljs-keyword">string</span>{
+    <span class="hljs-string">&quot;HASH&quot;</span>,
+    <span class="hljs-string">&quot;AUTHOR&quot;</span>,
+    <span class="hljs-string">&quot;SUBJECT&quot;</span>,
+    <span class="hljs-string">&quot;BODY&quot;</span>,
+}, delimiter)
+
+arguments := []<span class="hljs-keyword">string</span>{<span class="hljs-string">&quot;log&quot;</span>, fmt.Sprintf(<span class="hljs-string">&quot;--pretty=%s&quot;</span>, logFormat), fromBranch + <span class="hljs-string">&quot;..&quot;</span> + toBranch}
+RunCommand(path, <span class="hljs-string">&quot;git&quot;</span>, arguments...)
 </span></span></foreignObject></svg></code></pre>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="23" data-class="invert" data-paginate="true" data-theme="gaia" data-heading-divider="2" data-style="section{
@@ -565,18 +561,22 @@ img[alt~=&quot;right&quot;] {
   float: right;
 }
 ;">
-<h2>Collecting git commits</h2>
-<pre><code class="language-go"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap>separator := <span class="hljs-string">&quot;@@__CHGLOG__@@&quot;</span>
-delimiter := <span class="hljs-string">&quot;@@__CHGLOG_DELIMITER__@@&quot;</span>
-logFormat := separator + strings.Join([]<span class="hljs-keyword">string</span>{
-    <span class="hljs-string">&quot;HASH&quot;</span>, 
-    <span class="hljs-string">&quot;AUTHOR&quot;</span>,
-    <span class="hljs-string">&quot;SUBJECT&quot;</span>,
-    <span class="hljs-string">&quot;BODY&quot;</span>,
-}, delimiter)
+<h2>Update git branches</h2>
+<pre><code class="language-go"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap><span class="hljs-comment">// maintenance release</span>
+<span class="hljs-keyword">for</span> _, c := <span class="hljs-keyword">range</span> commits {
+    fmt.Println(color.YellowString(<span class="hljs-string">&quot;Cherry-pick this commit?: %s&quot;</span>, c.Title))
+    response, _ = prompt.Run()
+    <span class="hljs-keyword">switch</span> response {
+    <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;Y&quot;</span>, <span class="hljs-string">&quot;y&quot;</span>:
+        arguments = []<span class="hljs-keyword">string</span>{<span class="hljs-string">&quot;cherry-pick&quot;</span>, <span class="hljs-string">&quot;-x&quot;</span>, c.Hash}
+        _, err := RunCommand(path, <span class="hljs-string">&quot;git&quot;</span>, arguments...)
+    }
+}
+<span class="hljs-comment">// feature release</span>
+arguments := []<span class="hljs-keyword">string</span>{<span class="hljs-string">&quot;checkout&quot;</span>, <span class="hljs-string">&quot;-b&quot;</span>, branchName}
+output, err := RunCommand(path, <span class="hljs-string">&quot;git&quot;</span>, arguments)
 
-arguments := []<span class="hljs-keyword">string</span>{<span class="hljs-string">&quot;log&quot;</span>, fmt.Sprintf(<span class="hljs-string">&quot;--pretty=%s&quot;</span>, logFormat), fromBranch + <span class="hljs-string">&quot;..&quot;</span> + toBranch}
-RunCommand(path, <span class="hljs-string">&quot;git&quot;</span>, arguments...)
+RunCommand(path, <span class="hljs-string">&quot;make&quot;</span>, <span class="hljs-string">&quot;test&quot;</span>)
 </span></span></foreignObject></svg></code></pre>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="24" data-class="invert" data-paginate="true" data-theme="gaia" data-heading-divider="2" data-style="section{
@@ -819,7 +819,7 @@ img[alt~=&quot;right&quot;] {
 }
 ;">
 <h2>make package</h2>
-<pre><code class="language-makefile"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap>include_packages := <span class="hljs-variable">$(mips)</span> <span class="hljs-variable">$(mipsel)</span> <span class="hljs-variable">$(arm64)</span> <span class="hljs-variable">$(amd64)</span> <span class="hljs-variable">$(static)</span> <span class="hljs-variable">$(armel)</span> 
+<pre><code class="language-makefile"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap>include_packages := <span class="hljs-variable">$(mips)</span> <span class="hljs-variable">$(mipsel)</span> <span class="hljs-variable">$(arm64)</span> <span class="hljs-variable">$(amd64)</span> <span class="hljs-variable">$(static)</span> <span class="hljs-variable">$(armel)</span>
 <span class="hljs-variable">$(armhf)</span> <span class="hljs-variable">$(riscv64)</span> <span class="hljs-variable">$(s390x)</span> <span class="hljs-variable">$(ppc64le)</span> <span class="hljs-variable">$(i386)</span> <span class="hljs-variable">$(windows)</span> <span class="hljs-variable">$(darwinamd64)</span> <span class="hljs-variable">$(darwinarm64)</span>
 
 <span class="hljs-meta"><span class="hljs-meta-keyword">.PHONY</span>: $(include_packages)</span>
@@ -1203,7 +1203,7 @@ img[alt~=&quot;right&quot;] {
 }
 ;">
 <h2>Testing Dockerfile</h2>
-<pre><code class="language-go"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap>container, _ := testcontainers.GenericContainer(ctx, 
+<pre><code class="language-go"><svg data-marp-fitting="svg" data-marp-fitting-code><foreignObject><span data-marp-fitting-svg-content><span data-marp-fitting-svg-content-wrap>container, _ := testcontainers.GenericContainer(ctx,
 testcontainers.GenericContainerRequest{
     ContainerRequest: req,
     Started:          <span class="hljs-literal">true</span>,
