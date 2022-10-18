@@ -5,7 +5,7 @@ marp: true
 <!--
 theme: gaia
 class: invert
-headingDivider: 2 
+headingDivider: 2
 paginate: true
 style: |
     section{
@@ -191,7 +191,7 @@ func RunCommand(path, command string, arguments ...string) (string, error) {
     var w io.Writer
     var stdBuffer bytes.Buffer
     w = io.MultiWriter(os.Stdout, &stdBuffer)
-    
+
     cmd := exec.Command(command, arguments...)
     cmd.Dir = path
     cmd.Stdout = w
@@ -224,26 +224,6 @@ var c WrapColor
 w = io.MultiWriter(&c, &stdBuffer)
 ```
 
-## Update git branches
-
-```go
-RunCommand(path, "make", "test")
-// maintenance release
-for response != "Y" && response != "N" {
-    fmt.Println(color.YellowString("Cherry-pick this commit?: %s", c.Title))
-    response, _ = prompt.Run()
-    switch response {
-    case "Y", "y":
-        arguments = []string{"cherry-pick", "-x", c.Hash}
-        _, err := RunCommand(path, "git", arguments...)
-    }
-}
-
-// feature release
-arguments := []string{"checkout", "-b", branchName}
-output, err := RunCommand(path, "git", arguments)
-```
-
 ## Working with git commits
 
 ```go
@@ -263,7 +243,7 @@ type Commit struct {
 separator := "@@__CHGLOG__@@"
 delimiter := "@@__CHGLOG_DELIMITER__@@"
 logFormat := separator + strings.Join([]string{
-    "HASH", 
+    "HASH",
     "AUTHOR",
     "SUBJECT",
     "BODY",
@@ -271,6 +251,26 @@ logFormat := separator + strings.Join([]string{
 
 arguments := []string{"log", fmt.Sprintf("--pretty=%s", logFormat), fromBranch + ".." + toBranch}
 RunCommand(path, "git", arguments...)
+```
+
+## Update git branches
+
+```go
+// maintenance release
+for _, c := range commits {
+    fmt.Println(color.YellowString("Cherry-pick this commit?: %s", c.Title))
+    response, _ = prompt.Run()
+    switch response {
+    case "Y", "y":
+        arguments = []string{"cherry-pick", "-x", c.Hash}
+        _, err := RunCommand(path, "git", arguments...)
+    }
+}
+// feature release
+arguments := []string{"checkout", "-b", branchName}
+output, err := RunCommand(path, "git", arguments)
+
+RunCommand(path, "make", "test")
 ```
 
 ## Changelog template
@@ -371,7 +371,7 @@ build:
 ## make package
 
 ```makefile
-include_packages := $(mips) $(mipsel) $(arm64) $(amd64) $(static) $(armel) 
+include_packages := $(mips) $(mipsel) $(arm64) $(amd64) $(static) $(armel)
 $(armhf) $(riscv64) $(s390x) $(ppc64le) $(i386) $(windows) $(darwinamd64) $(darwinarm64)
 
 .PHONY: $(include_packages)
@@ -406,7 +406,7 @@ func build(p platform) (string, error) {
 }
 ```
 
-Check it out: https://github.com/magefile/mage 
+Check it out: https://github.com/magefile/mage
 
 ## Adding version and icon to Windows
 
@@ -480,7 +480,7 @@ _class: lead invert
 - influxdata/helm-charts (public)
 - influxdata/website (private)
 
-## 
+##
 
 ![bg fit](img/github.png)
 
@@ -528,7 +528,7 @@ m.Versions = append(m.Versions, fmt.Sprintf("%d.%d", ver.Major(), ver.Minor()))
 ## Testing Dockerfile
 
 ```go
-container, _ := testcontainers.GenericContainer(ctx, 
+container, _ := testcontainers.GenericContainer(ctx,
 testcontainers.GenericContainerRequest{
     ContainerRequest: req,
     Started:          true,
