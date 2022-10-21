@@ -456,13 +456,8 @@ if err := ioutil.WriteFile("cmd/telegraf/versioninfo.json", file, 0644); err != 
 
 ## **Building and Packaging:** lessons learned
 
-- Don’t run the CI on wednesdays
 - Make artifacts readily available
 - Sign mac nightly, replicate release pipeline
-
-## **Building and Packaging:** future improvements
-
-- Migrate more steps to continuous integration pipeline
 
 ## Announcing the release
 
@@ -574,12 +569,7 @@ if err != nil {
 
 ## **Distributing Binaries:** lessons learned
 
-- Document all permissions required
 - If there is a problem increment patch, or the hash will change
-
-## **Distributing Binaries:** future improvements
-
-- Migrate more steps to continuous integration pipeline
 
 ## Conquering a Major Release
 
